@@ -95,7 +95,7 @@ class CondorSkill(MycroftSkill):
     def handle_set_stack_light_intent(self, message):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
         color_kw = message.data.get("ColorKeyword")
-        self.send_MQTT("Arcx/SL", message.data.get('utterance'))
+        self.send_MQTT("Arcx/SL", str(color_kw))
         self.speak_dialog("set_stacklight", data={"result": str(color_kw)}, wait=True)
 
 
