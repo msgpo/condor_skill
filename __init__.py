@@ -68,8 +68,8 @@ class CondorSkill(MycroftSkill):
     @intent_handler(IntentBuilder("WikiIntent").require("TellKeyword").
                     require("AboutKeyword").require("ConestogaKeyword").build())
     def handle_wiki_intent(self, message):
-        LOG.info('Condor.ai was asked: ' + str(message.utterance()))
-        self.send_MQTT('Condor.ai was asked: ' + str(message.utterance()))
+        LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
+        self.send_MQTT('Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
         # self.speak_dialog("about", data={"result": str(gpio_request)})
         self.speak_dialog("about")
@@ -77,8 +77,8 @@ class CondorSkill(MycroftSkill):
     @intent_handler(IntentBuilder("AcademicIntent").require("WhatKeyword").
                     require("AcademicKeyword").optionally("ConestogaKeyword").build())
     def handle_academic_intent(self, message):
-        LOG.info('Condor.ai was asked: ' + str(message.utterance()))
-        self.send_MQTT('Condor.ai was asked: ' + str(message.utterance()))
+        LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
+        self.send_MQTT('Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
         # self.speak_dialog("about", data={"result": str(gpio_request)})
         self.speak_dialog("academic")
@@ -86,8 +86,8 @@ class CondorSkill(MycroftSkill):
     @intent_handler(IntentBuilder("CampusIntent").require("WhereKeyword").
                     require("CampusKeyword").optionally("ConestogaKeyword").build())
     def handle_campus_intent(self, message):
-        LOG.info('Condor.ai was asked: ' + str(message.utterance()))
-        self.send_MQTT('Condor.ai was asked: ' + str(message.utterance()))
+        LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
+        self.send_MQTT('Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
         # self.speak_dialog("about", data={"result": str(gpio_request)})
         self.speak_dialog("campus")
@@ -95,8 +95,8 @@ class CondorSkill(MycroftSkill):
     @intent_handler(IntentBuilder("CardIntent").require("Business").
                     require("CardKeyword").optionally("ConestogaKeyword").build())
     def handle_card_intent(self, message):
-        LOG.info('Condor.ai was asked: ' + str(message.utterance()))
-        self.send_MQTT('Condor.ai was asked: ' + str(message.utterance()))
+        LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
+        self.send_MQTT('Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
         # self.speak_dialog("about", data={"result": str(gpio_request)})
         pin_index = 1
