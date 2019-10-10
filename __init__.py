@@ -61,7 +61,7 @@ class CondorSkill(MycroftSkill):
                 if "OffKeyword" in message.data:
                     self.gpio_off(board_pin, gpio_request)
             else:
-                self.speak_dialog("error", data={"result": str(gpio_request)})
+                self.speak_dialog("error", data={"result": str(gpio_request)}, wait=True)
         else:
             self.speak('No GPIO Pin was specified')
 
@@ -71,8 +71,7 @@ class CondorSkill(MycroftSkill):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
         self.send_MQTT('Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
-        # self.speak_dialog("about", data={"result": str(gpio_request)})
-        self.speak_dialog("about")
+        self.speak_dialog("about", wait=True)
 
     @intent_handler(IntentBuilder("AcademicIntent").require("WhatKeyword").
                     require("AcademicKeyword").optionally("ConestogaKeyword").build())
@@ -80,8 +79,8 @@ class CondorSkill(MycroftSkill):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
         self.send_MQTT('Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
-        # self.speak_dialog("about", data={"result": str(gpio_request)})
-        self.speak_dialog("academic")
+        self.speak_dialog("academic1", wait=True)
+        self.speak_dialog("academic2", wait=True)
 
     @intent_handler(IntentBuilder("CampusIntent").require("WhereKeyword").
                     require("CampusKeyword").optionally("ConestogaKeyword").build())
@@ -89,8 +88,7 @@ class CondorSkill(MycroftSkill):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
         self.send_MQTT('Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
-        # self.speak_dialog("about", data={"result": str(gpio_request)})
-        self.speak_dialog("campus")
+        self.speak_dialog("campus", wait=True)
 
     @intent_handler(IntentBuilder("CardIntent").require("Business").
                     require("CardKeyword").optionally("ConestogaKeyword").build())
@@ -98,7 +96,6 @@ class CondorSkill(MycroftSkill):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
         self.send_MQTT('Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
-        # self.speak_dialog("about", data={"result": str(gpio_request)})
         pin_index = 1
         board_pin = self.io_pins[pin_index]
         self.get_card(board_pin)
@@ -108,13 +105,13 @@ class CondorSkill(MycroftSkill):
         GPIO.setup(board_number, GPIO.OUT, initial=0)
         GPIO.output(board_number, True)
         LOG.info('Turning On GPIO Number: ' + str(gpio_request_number))
-        self.speak_dialog("on", data={"result": str(gpio_request_number)})
+        self.speak_dialog("on", data={"result": str(gpio_request_number)}, wait=True)
 
     def gpio_off(self, board_number, gpio_request_number):
         GPIO.setup(board_number, GPIO.OUT, initial=0)
         GPIO.output(board_number, False)
         LOG.info('Turning Off GPIO Number: ' + str(gpio_request_number))
-        self.speak_dialog("off", data={"result": str(gpio_request_number)})
+        self.speak_dialog("off", data={"result": str(gpio_request_number)}, wait=True)
 
     def get_card(self, program_select):
         GPIO.setup(program_select, GPIO.OUT, initial=0)
