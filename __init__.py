@@ -87,7 +87,7 @@ class CondorSkill(MycroftSkill):
                     require("CampusKeyword").optionally("ConestogaKeyword").build())
     def handle_campus_intent(self, message):
         LOG.info('Condor.ai was asked: ' + str(message.uterance()))
-        self.send_MQTT('Condor.ai was asked: ' + str(message.uterance()))
+        self.send_MQTT('Condor.ai was asked: ' + str(message.utterance()))
         str_remainder = str(message.utterance_remainder())
         # self.speak_dialog("about", data={"result": str(gpio_request)})
         self.speak_dialog("campus")
@@ -95,8 +95,8 @@ class CondorSkill(MycroftSkill):
     @intent_handler(IntentBuilder("CardIntent").require("Business").
                     require("CardKeyword").optionally("ConestogaKeyword").build())
     def handle_card_intent(self, message):
-        LOG.info('Condor.ai was asked: ' + str(message.uterance()))
-        self.send_MQTT('Condor.ai was asked: ' + str(message.uterance()))
+        LOG.info('Condor.ai was asked: ' + str(message.utterance()))
+        self.send_MQTT('Condor.ai was asked: ' + str(message.utterance()))
         str_remainder = str(message.utterance_remainder())
         # self.speak_dialog("about", data={"result": str(gpio_request)})
         pin_index = 1
