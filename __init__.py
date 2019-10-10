@@ -4,6 +4,8 @@ from mycroft.skills.core import MycroftSkill
 from mycroft.util.log import getLogger
 from mycroft.util.log import LOG
 
+import string
+import random
 import RPi.GPIO as GPIO
 import paho.mqtt.client as mqtt
 
@@ -26,6 +28,7 @@ class CondorSkill(MycroftSkill):
         super(CondorSkill, self).__init__(name="CondorSkill")
         self.myKeywords = []
         self.client = mqtt.Client()
+        self.broker_address = "192.168.0.43"
 
     # This method loads the files needed for the skill's functioning, and
     # creates and registers each intent that the skill uses
@@ -34,6 +37,8 @@ class CondorSkill(MycroftSkill):
         GPIO.setmode(GPIO.BOARD)
         self.load_data_files(dirname(__file__))
 
+    def id_generator(self, size=6, chars=string.ascii_uppercase + string.digits):
+        return ''.join(random.choice(chars) for _ in range(size))
 
     @intent_handler(IntentBuilder("GPIOIntent").require("GpioKeyword").
                     one_of("OnKeyword", "OffKeyword").build())
@@ -116,9 +121,9 @@ class CondorSkill(MycroftSkill):
         GPIO.output(program_select, True)
 
     def send_MQTT(self, myMessage):
-        self.client.connect("localhost", 1883, 60)
-        self.client.publish("topic/mycroft.ai", myMessage);
-        self.client.disconnect();
+        self.client = mqtt.Client(self.id_generator())  # create new instance
+        self.client.connect(self.broker_address)  # connect to broker
+        self.client.publish("topic/mycroft.ai", myMessage)  # publish
 
     def stop(self):
         pass
