@@ -69,7 +69,7 @@ class CondorSkill(MycroftSkill):
                     require("AboutKeyword").require("ConestogaKeyword").build())
     def handle_wiki_intent(self, message):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
-        self.send_MQTT('Condor.ai was asked: ' + message.data.get('utterance'))
+        self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
         self.speak_dialog("about", wait=True)
 
@@ -77,7 +77,7 @@ class CondorSkill(MycroftSkill):
                     require("AcademicKeyword").optionally("ConestogaKeyword").build())
     def handle_academic_intent(self, message):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
-        self.send_MQTT('Condor.ai was asked: ' + message.data.get('utterance'))
+        self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
         self.speak_dialog("academic1", wait=True)
         self.speak_dialog("academic2", wait=True)
@@ -86,20 +86,29 @@ class CondorSkill(MycroftSkill):
                     require("CampusKeyword").optionally("ConestogaKeyword").build())
     def handle_campus_intent(self, message):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
-        self.send_MQTT('Condor.ai was asked: ' + message.data.get('utterance'))
+        self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
         self.speak_dialog("campus", wait=True)
+
+    @intent_handler(IntentBuilder("SetStackLightIntent").require("SetKeyword").
+                    require("StackLightKeyword").require("ColorKeyword").build())
+    def handle_set_stack_light_intent(self, message):
+        LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
+        color_kw = message.data.get("ColorKeyword")
+        self.send_MQTT("Arcx/SL", 'Condor.ai was asked: ' + message.data.get('utterance'))
+        self.speak_dialog("set_stacklight", data={"result": str(color_kw)}, wait=True)
+
 
     @intent_handler(IntentBuilder("CardIntent").require("Business").
                     require("CardKeyword").optionally("ConestogaKeyword").build())
     def handle_card_intent(self, message):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
-        self.send_MQTT('Condor.ai was asked: ' + message.data.get('utterance'))
+        self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
         pin_index = 1
         board_pin = self.io_pins[pin_index]
         self.get_card(board_pin)
-        self.send_MQTT("Condor.ai is retrieving a business card")
+        self.send_MQTT("topic/mycroft.ai" "Condor.ai is retrieving a business card")
 
     def gpio_on(self, board_number, gpio_request_number):
         GPIO.setup(board_number, GPIO.OUT, initial=0)
@@ -117,10 +126,10 @@ class CondorSkill(MycroftSkill):
         GPIO.setup(program_select, GPIO.OUT, initial=0)
         GPIO.output(program_select, True)
 
-    def send_MQTT(self, myMessage):
+    def send_MQTT(self, myTopic, myMessage):
         self.client = mqtt.Client(self.id_generator())  # create new instance
         self.client.connect(self.broker_address)  # connect to broker
-        self.client.publish("topic/mycroft.ai", myMessage)  # publish
+        self.client.publish(myTopic, myMessage)  # publish
 
     def stop(self):
         pass
