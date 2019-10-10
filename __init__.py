@@ -1,6 +1,6 @@
 from os.path import dirname
 from adapt.intent import IntentBuilder
-from mycroft.skills.core import MycroftSkill
+from mycroft.skills.core import MycroftSkill, intent_handler, intent_file_handler
 from mycroft.util.log import getLogger
 from mycroft.util.log import LOG
 
