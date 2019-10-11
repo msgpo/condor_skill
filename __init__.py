@@ -4,6 +4,8 @@ from mycroft.skills.core import MycroftSkill, intent_handler, intent_file_handle
 from mycroft.util.log import getLogger
 from mycroft.util.log import LOG
 
+from pylogix import PLC
+from time import sleep
 import string
 import random
 import RPi.GPIO as GPIO
@@ -29,6 +31,8 @@ class CondorSkill(MycroftSkill):
         self.myKeywords = []
         self.client = mqtt.Client()
         self.broker_address = "192.168.0.43"
+        self.comm = PLC()
+        self.comm.IPAddress = "192.168.1.9"  # PLC Address
 
     # This method loads the files needed for the skill's functioning, and
     # creates and registers each intent that the skill uses
@@ -98,17 +102,29 @@ class CondorSkill(MycroftSkill):
         self.send_MQTT("Arcx/SL", str(color_kw))
         self.speak_dialog("set_stacklight", data={"result": str(color_kw)}, wait=True)
 
+    # @intent_handler(IntentBuilder("CardIntent").require("Business").
+    #                 require("CardKeyword").optionally("ConestogaKeyword").build())
+    # def handle_card_intent(self, message):
+    #     LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
+    #     self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
+    #     str_remainder = str(message.utterance_remainder())
+    #     pin_index = 1
+    #     board_pin = self.io_pins[pin_index]
+    #     self.get_card(board_pin)
+    #     self.send_MQTT("topic/mycroft.ai" "Condor.ai is retrieving a business card")
 
-    @intent_handler(IntentBuilder("CardIntent").require("Business").
+    @intent_handler(IntentBuilder("RobotStartIntent").require("Business").
                     require("CardKeyword").optionally("ConestogaKeyword").build())
-    def handle_card_intent(self, message):
+    def handle_robot_start_intent(self, message):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
         self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
-        pin_index = 1
-        board_pin = self.io_pins[pin_index]
-        self.get_card(board_pin)
         self.send_MQTT("topic/mycroft.ai" "Condor.ai is retrieving a business card")
+        self.write_PLC("startRobot", 1)
+        sleep(1)
+        self.write_PLC("startRobot", 0)
+
+
 
     def gpio_on(self, board_number, gpio_request_number):
         GPIO.setup(board_number, GPIO.OUT, initial=0)
@@ -130,6 +146,10 @@ class CondorSkill(MycroftSkill):
         self.client = mqtt.Client(self.id_generator())  # create new instance
         self.client.connect(self.broker_address)  # connect to broker
         self.client.publish(myTopic, myMessage)  # publish
+
+    def write_PLC(self, myTagName, myTagValue):
+        self.comm.Write(myTagName, myTagValue)
+        self.comm.Close()
 
     def stop(self):
         pass
