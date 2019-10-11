@@ -32,7 +32,7 @@ class CondorSkill(MycroftSkill):
         self.client = mqtt.Client()
         self.broker_address = "192.168.0.43"
         self.comm = PLC()
-        self.comm.IPAddress = "192.168.1.9"  # PLC Address
+        self.comm.IPAddress = "192.168.0.210"  # PLC Address
 
     # This method loads the files needed for the skill's functioning, and
     # creates and registers each intent that the skill uses
@@ -120,9 +120,9 @@ class CondorSkill(MycroftSkill):
         self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
         self.send_MQTT("topic/mycroft.ai" "Condor.ai is retrieving a business card")
-        self.write_PLC("startRobot", 1)
+        self.write_PLC("LeftMotorSafety", 1)
         sleep(1)
-        self.write_PLC("startRobot", 0)
+        self.write_PLC("LeftMotorSafety", 0)
 
 
 
