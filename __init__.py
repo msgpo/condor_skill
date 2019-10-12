@@ -113,7 +113,7 @@ class CondorSkill(MycroftSkill):
     #     self.get_card(board_pin)
     #     self.send_MQTT("topic/mycroft.ai" "Condor.ai is retrieving a business card")
 
-    @intent_handler(IntentBuilder("RobotStartIntent").require("Business").
+    @intent_handler(IntentBuilder("RobotStartIntent").require("BusinessKeyword").
                     require("CardKeyword").optionally("ConestogaKeyword").build())
     def handle_robot_start_intent(self, message):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
