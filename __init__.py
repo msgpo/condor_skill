@@ -88,6 +88,8 @@ class CondorSkill(MycroftSkill):
 
     @intent_handler(IntentBuilder("CampusIntent").require("WhereKeyword").
                     require("CampusKeyword").optionally("ConestogaKeyword").build())
+    @intent_handler(IntentBuilder("CampusIntent").require("WhereKeyword").
+                    optionally("CampusKeyword").require("ConestogaKeyword").build())
     def handle_campus_intent(self, message):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
         self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
@@ -121,6 +123,7 @@ class CondorSkill(MycroftSkill):
         str_remainder = str(message.utterance_remainder())
         self.send_MQTT("topic/mycroft.ai", "Condor.ai is retrieving a business card")
         self.write_PLC("LeftMotorSafety", 1)
+        self.speak_dialog("retrieve_card", wait=False)
         sleep(1)
         self.write_PLC("LeftMotorSafety", 0)
 
