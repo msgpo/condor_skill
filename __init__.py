@@ -119,7 +119,7 @@ class CondorSkill(MycroftSkill):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
         self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
-        self.send_MQTT("topic/mycroft.ai" "Condor.ai is retrieving a business card")
+        self.send_MQTT("topic/mycroft.ai", "Condor.ai is retrieving a business card")
         self.write_PLC("LeftMotorSafety", 1)
         sleep(1)
         self.write_PLC("LeftMotorSafety", 0)
