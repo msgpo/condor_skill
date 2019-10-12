@@ -86,8 +86,8 @@ class CondorSkill(MycroftSkill):
         self.speak_dialog("academic1", wait=True)
         self.speak_dialog("academic2", wait=True)
 
-    @intent_handler(IntentBuilder("CampusIntent").require("WhereKeyword").
-                    require("CampusKeyword").optionally("ConestogaKeyword").build())
+    # @intent_handler(IntentBuilder("CampusIntent").require("WhereKeyword").
+    #                 require("CampusKeyword").optionally("ConestogaKeyword").build())
     @intent_handler(IntentBuilder("CampusIntent").require("WhereKeyword").
                     optionally("CampusKeyword").require("ConestogaKeyword").build())
     def handle_campus_intent(self, message):
