@@ -129,9 +129,11 @@ class CondorSkill(MycroftSkill):
         if "YesKeyword" in message.data:
             self.send_MQTT("topic/mycroft.ai", "Condor.ai is retrieving a business card")
             self.write_PLC("LeftMotorSafety", 1)
+            LOG.info('PLC Output Should be On')
             self.speak_dialog("retrieve_card", wait=False)
             sleep(1)
             self.write_PLC("LeftMotorSafety", 0)
+            LOG.info('PLC Output Should be Off')
         else:
             self.speak_dialog("retrieve_card", wait=False)
 
