@@ -1,0 +1,34 @@
+{
+    "name": "Condor Robot Control Skill (Condor-skill)",
+    "skillMetadata": {
+        "sections": [
+            {
+                "name": "Settings",
+                "fields": [
+                    {
+                        "type": "label",
+                        "label": "Complete the data for the following settings."
+                    },
+                    {
+                        "name": "broker_address",
+                        "type": "text",
+                        "label": "IP Address of the MQTT Broker",
+                        "value": "127.0.0.1"
+                    },
+                    {
+                        "name": "plc_address",
+                        "type": "text",
+                        "label": "IP Address of the MQTT Broker PLC",
+                        "value": "127.0.0.1"
+                    },
+                    {
+                        "name": "plc_tag_name",
+                        "type": "text",
+                        "label": "The Boolean Tag Name Used in the PLC to Control The Robot",
+                        "value": "StartRobot"
+                    }
+                ]
+            }
+        ]
+    }
+}

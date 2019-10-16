@@ -32,6 +32,7 @@ class CondorSkill(MycroftSkill):
         self.client = mqtt.Client()
         self.settings["broker_address"] = "192.168.0.43"
         self.settings["plc_address"] = "192.168.0.210"
+        self.settings["plc_tag_name"] = "StartRobot"
         self.comm = PLC()
 
 
@@ -49,6 +50,7 @@ class CondorSkill(MycroftSkill):
         if not self._is_setup:
             self.broker_address = self.settings.get("broker_address", "192.168.0.43")
             self.comm.IPAddress = self.settings.get("plc_address", "192.168.0.210")
+            self.plcTagName = self.settings.get("plc_tag_name", "StartRobot")
             self._is_setup = True
 
 
@@ -126,10 +128,12 @@ class CondorSkill(MycroftSkill):
         self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
         self.send_MQTT("topic/mycroft.ai", "Condor.ai is retrieving a business card")
-        self.write_PLC("LeftMotorSafety", 1)
+        LOG.info('PLC Output Should be On')
+        self.write_PLC(self.plcTagName, 1)
         self.speak_dialog("retrieve_card", wait=False)
         sleep(1)
-        self.write_PLC("LeftMotorSafety", 0)
+        self.write_PLC(self.plcTagName, 0)
+        LOG.info('PLC Output Should be Off')
 
     @intent_handler(IntentBuilder("CardConversationIntent").require("BusinessCardContextKeyword").
                     one_of('YesKeyword', 'NoKeyword').build())
@@ -140,14 +144,14 @@ class CondorSkill(MycroftSkill):
         self.set_context('BusinessCardContextKeyword', '')
         if "YesKeyword" in message.data:
             self.send_MQTT("topic/mycroft.ai", "Condor.ai is retrieving a business card")
-            self.write_PLC("LeftMotorSafety", 1)
+            self.write_PLC("StartRobot", 1)
             LOG.info('PLC Output Should be On')
             self.speak_dialog("retrieve_card", wait=False)
             sleep(1)
-            self.write_PLC("LeftMotorSafety", 0)
+            self.write_PLC(self.plcTagName, 0)
             LOG.info('PLC Output Should be Off')
         else:
-            self.speak_dialog("retrieve_card", wait=False)
+            self.speak_dialog(self.plcTagName, wait=False)
 
     def card_conversation(self):
         low_number = 1
