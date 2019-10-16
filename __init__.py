@@ -30,9 +30,10 @@ class CondorSkill(MycroftSkill):
         super(CondorSkill, self).__init__(name="CondorSkill")
         self.myKeywords = []
         self.client = mqtt.Client()
-        self.broker_address = "192.168.0.43"
+        self.settings["broker_address"] = "192.168.0.43"
+        self.settings["plc_address"] = "192.168.0.210"
         self.comm = PLC()
-        self.comm.IPAddress = "192.168.0.210"  # PLC Address
+
 
     # This method loads the files needed for the skill's functioning, and
     # creates and registers each intent that the skill uses
@@ -40,6 +41,17 @@ class CondorSkill(MycroftSkill):
         self.io_pins = [3, 5, 7, 29, 31, 26, 24, 21, 19, 23, 32, 33, 8, 10, 36, 11, 12, 35, 38, 40, 15, 16, 18, 22, 37, 13]
         GPIO.setmode(GPIO.BOARD)
         self.load_data_files(dirname(__file__))
+        #  Check and then monitor for credential changes
+        self.settings.set_changed_callback(self.on_websettings_changed)
+        self.on_websettings_changed()
+
+    def on_websettings_changed(self):  # called when updating mycroft home page
+        if not self._is_setup:
+            self.broker_address = self.settings.get("broker_address", "192.168.0.43")
+            self.comm.IPAddress = self.settings.get("plc_address", "192.168.0.210")
+            self._is_setup = True
+
+
 
     def id_generator(self, size=6, chars=string.ascii_uppercase + string.digits):
         return ''.join(random.choice(chars) for _ in range(size))
