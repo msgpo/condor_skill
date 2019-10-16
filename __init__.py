@@ -76,6 +76,7 @@ class CondorSkill(MycroftSkill):
         self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
         self.speak_dialog("about", wait=True)
+        self.card_conversation()
 
     @intent_handler(IntentBuilder("AcademicIntent").require("WhatKeyword").
                     require("AcademicKeyword").optionally("ConestogaKeyword").build())
@@ -85,6 +86,7 @@ class CondorSkill(MycroftSkill):
         str_remainder = str(message.utterance_remainder())
         self.speak_dialog("academic1", wait=True)
         self.speak_dialog("academic2", wait=True)
+        self.card_conversation()
 
     # @intent_handler(IntentBuilder("CampusIntent").require("WhereKeyword").
     #                 require("CampusKeyword").optionally("ConestogaKeyword").build())
@@ -95,6 +97,7 @@ class CondorSkill(MycroftSkill):
         self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
         self.speak_dialog("campus", wait=True)
+        self.card_conversation()
 
     @intent_handler(IntentBuilder("SetStackLightIntent").require("SetKeyword").
                     require("StackLightKeyword").require("ColorKeyword").build())
@@ -103,17 +106,6 @@ class CondorSkill(MycroftSkill):
         color_kw = message.data.get("ColorKeyword")
         self.send_MQTT("Arcx/SL", str(color_kw))
         self.speak_dialog("set_stacklight", data={"result": str(color_kw)}, wait=True)
-
-    # @intent_handler(IntentBuilder("CardIntent").require("Business").
-    #                 require("CardKeyword").optionally("ConestogaKeyword").build())
-    # def handle_card_intent(self, message):
-    #     LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
-    #     self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
-    #     str_remainder = str(message.utterance_remainder())
-    #     pin_index = 1
-    #     board_pin = self.io_pins[pin_index]
-    #     self.get_card(board_pin)
-    #     self.send_MQTT("topic/mycroft.ai" "Condor.ai is retrieving a business card")
 
     @intent_handler(IntentBuilder("RobotStartIntent").require("BusinessKeyword").
                     require("CardKeyword").optionally("ConestogaKeyword").build())
@@ -147,6 +139,7 @@ class CondorSkill(MycroftSkill):
         low_number = 1
         high_number = 5
         my_number = random.randint(low_number, high_number)
+        LOG.info('Card Request Context ID: ' + my_number)
         if my_number == 5:
             self.set_context('BusinessCardContextKeyword', 'SetBusinessCardContext')
             self.speak_dialog("ask_card", wait=True, expect_response=True)
