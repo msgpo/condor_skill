@@ -18,7 +18,7 @@
                     {
                         "name": "plc_address",
                         "type": "text",
-                        "label": "IP Address of the MQTT Broker PLC",
+                        "label": "IP Address of the PLC",
                         "value": "127.0.0.1"
                     },
                     {
