@@ -127,7 +127,29 @@ class CondorSkill(MycroftSkill):
         sleep(1)
         self.write_PLC("LeftMotorSafety", 0)
 
+    @intent_handler(IntentBuilder("CardConversationIntent").require("BusinessCardContextKeyword").
+                    one_of('YesKeyword', 'NoKeyword').build())
+    def handle_card_conversation_intent(self, message):
+        LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
+        self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
+        str_remainder = str(message.utterance_remainder())
+        self.set_context('BusinessCardContextKeyword', '')
+        if "YesKeyword" in message.data:
+            self.send_MQTT("topic/mycroft.ai", "Condor.ai is retrieving a business card")
+            self.write_PLC("LeftMotorSafety", 1)
+            self.speak_dialog("retrieve_card", wait=False)
+            sleep(1)
+            self.write_PLC("LeftMotorSafety", 0)
+        else:
+            self.speak_dialog("retrieve_card", wait=False)
 
+    def card_conversation(self):
+        low_number = 1
+        high_number = 5
+        my_number = random.randint(low_number, high_number)
+        if my_number == 5:
+            self.set_context('BusinessCardContextKeyword', 'SetBusinessCardContext')
+            self.speak_dialog("ask_card", wait=True, expect_response=True)
 
     def gpio_on(self, board_number, gpio_request_number):
         GPIO.setup(board_number, GPIO.OUT, initial=0)
