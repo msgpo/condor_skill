@@ -34,6 +34,7 @@ class CondorSkill(MycroftSkill):
         self.settings["plc_address"] = "192.168.0.210"
         self.settings["plc_tag_name"] = "StartRobot"
         self.comm = PLC()
+        self._is_setup = False
 
 
     # This method loads the files needed for the skill's functioning, and
@@ -52,7 +53,6 @@ class CondorSkill(MycroftSkill):
             self.comm.IPAddress = self.settings.get("plc_address", "192.168.0.210")
             self.plcTagName = self.settings.get("plc_tag_name", "StartRobot")
             self._is_setup = True
-
 
 
     def id_generator(self, size=6, chars=string.ascii_uppercase + string.digits):
