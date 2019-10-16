@@ -13,7 +13,13 @@
                         "name": "broker_address",
                         "type": "text",
                         "label": "IP Address of the MQTT Broker",
-                        "value": "127.0.0.1"
+                        "value": "192.168.0.43"
+                    },
+                    {
+                        "name": "broker_port",
+                        "type": "number",
+                        "label": "The MQTT Broker Port Number",
+                        "value": 1884
                     },
                     {
                         "name": "plc_address",

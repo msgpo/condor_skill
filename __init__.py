@@ -31,6 +31,7 @@ class CondorSkill(MycroftSkill):
         self.myKeywords = []
         self.client = mqtt.Client()
         self.settings["broker_address"] = "192.168.0.43"
+        self.settings["broker_port"] = 1884
         self.settings["plc_address"] = "192.168.0.210"
         self.settings["plc_tag_name"] = "StartRobot"
         self.comm = PLC()
@@ -50,6 +51,7 @@ class CondorSkill(MycroftSkill):
     def on_websettings_changed(self):  # called when updating mycroft home page
         if not self._is_setup:
             self.broker_address = self.settings.get("broker_address", "192.168.0.43")
+            self.broker_port = self.settings.get("broker_port", 1884)
             self.comm.IPAddress = self.settings.get("plc_address", "192.168.0.210")
             self.plcTagName = self.settings.get("plc_tag_name", "StartRobot")
             self._is_setup = True
@@ -180,7 +182,7 @@ class CondorSkill(MycroftSkill):
 
     def send_MQTT(self, myTopic, myMessage):
         self.client = mqtt.Client(self.id_generator())  # create new instance
-        self.client.connect(self.broker_address)  # connect to broker
+        self.client.connect(self.broker_address, self.broker_port)  # connect to broker
         self.client.publish(myTopic, myMessage)  # publish
 
     def write_PLC(self, myTagName, myTagValue):
