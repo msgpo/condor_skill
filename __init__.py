@@ -200,7 +200,6 @@ class CondorSkill(MycroftSkill):
     def write_plc(self, myTagName, myTagValue):
         LOG.info('Writing: ' + myTagName + ' A value of: ' + str(myTagValue))
         self.comm.Write(myTagName, myTagValue)
-        self.comm.
         self.comm.Close()
 
     def stop(self):
