@@ -34,7 +34,7 @@ class CondorSkill(MycroftSkill):
         self.settings["broker_address"] = self.broker_address
         self.broker_port = 1884
         self.settings["broker_port"] = self.broker_port
-        self.settings["plc_address"] = "192.168.0.210"
+        self.settings["plc_address"] = "142.156.204.39"
         self.plcOutTagName = "StartRobot"
         self.settings["plc_out_tag_name"] = self.plcOutTagName
         self.plcInTagName = "RobotStarted"
