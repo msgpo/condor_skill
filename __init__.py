@@ -195,7 +195,7 @@ class CondorSkill(MycroftSkill):
             if inTag.Value == 1:
                 self.speak_dialog("card_delivered", wait=False)
             else:
-                sleep(0.5)
+                sleep(1)
 
     def write_plc(self, myTagName, myTagValue):
         LOG.info('Writing: ' + myTagName + ' A value of: ' + str(myTagValue))
