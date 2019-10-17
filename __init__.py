@@ -189,7 +189,7 @@ class CondorSkill(MycroftSkill):
         self.write_plc(self.plcOutTagName, 0)
         LOG.info('PLC Output Should be Off')
         inTag = self.comm.Read(self.plcInTagName)
-        while inTag.Value == 0:
+        while inTag.value == 0:
             inTag = self.comm.Read(self.plcInTagName)
             LOG.info('Checking Robot Complete Status: ' + str(inTag.Value))
             if inTag.Value == 1:
