@@ -53,6 +53,11 @@ class CondorSkill(MycroftSkill):
         self.settings.set_changed_callback(self.on_websettings_changed)
         self.on_websettings_changed()
 
+        self.add_event('recognizer_loop:wakeword', self.handle_listen)  # should be "utterance"
+        self.add_event('recognizer_loop:utterance', self.handle_utterances) # should be "utterances"
+        self.add_event('speak', self.handle_speak)# should be "utterance"
+
+
     def on_websettings_changed(self):  # called when updating mycroft home page
         if not self._is_setup:
             self.broker_address = self.settings.get("broker_address", "192.168.0.43")
@@ -93,7 +98,7 @@ class CondorSkill(MycroftSkill):
                     require("AboutKeyword").require("ConestogaKeyword").build())
     def handle_wiki_intent(self, message):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
-        self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
+        # self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
         self.speak_dialog("about", wait=True)
         self.card_conversation()
@@ -102,7 +107,7 @@ class CondorSkill(MycroftSkill):
                     require("AcademicKeyword").optionally("ConestogaKeyword").build())
     def handle_academic_intent(self, message):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
-        self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
+        # self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
         self.speak_dialog("academic1", wait=True)
         self.speak_dialog("academic2", wait=True)
@@ -114,7 +119,7 @@ class CondorSkill(MycroftSkill):
                     optionally("CampusKeyword").require("ConestogaKeyword").build())
     def handle_campus_intent(self, message):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
-        self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
+        # self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
         self.speak_dialog("campus_intro", wait=True)
         self.speak_dialog("campus", wait=True)
@@ -125,27 +130,27 @@ class CondorSkill(MycroftSkill):
     def handle_set_stack_light_intent(self, message):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
         color_kw = message.data.get("ColorKeyword")
-        self.send_MQTT("Arcx/SL", str(color_kw))
+        # self.send_MQTT("Arcx/SL", str(color_kw))
         self.speak_dialog("set_stacklight", data={"result": str(color_kw)}, wait=True)
 
     @intent_handler(IntentBuilder("RobotStartIntent").require("BusinessKeyword").
                     require("CardKeyword").optionally("ConestogaKeyword").build())
     def handle_robot_start_intent(self, message):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
-        self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
+        # self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
-        self.send_MQTT("topic/mycroft.ai", "Condor.ai is retrieving a business card")
+        # self.send_MQTT("topic/mycroft.ai", "Condor.ai is retrieving a business card")
         self.start_robot()
 
     @intent_handler(IntentBuilder("CardConversationIntent").require("BusinessCardContextKeyword").
                     one_of('YesKeyword', 'NoKeyword').build())
     def handle_card_conversation_intent(self, message):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
-        self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
+        # self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
         self.set_context('BusinessCardContextKeyword', '')
         if "YesKeyword" in message.data:
-            self.send_MQTT("topic/mycroft.ai", "Condor.ai is retrieving a business card")
+            # self.send_MQTT("topic/mycroft.ai", "Condor.ai is retrieving a business card")
             self.start_robot()
         else:
             self.speak_dialog("no_card", wait=False)
@@ -175,10 +180,6 @@ class CondorSkill(MycroftSkill):
         GPIO.setup(program_select, GPIO.OUT, initial=0)
         GPIO.output(program_select, True)
 
-    def send_MQTT(self, myTopic, myMessage):
-        self.client = mqtt.Client(self.id_generator())  # create new instance
-        #self.client.connect(self.broker_address, self.broker_port)  # connect to broker
-        #self.client.publish(myTopic, myMessage)  # publish
 
     def start_robot(self):
         LOG.info(self.comm.IPAddress)
@@ -201,6 +202,44 @@ class CondorSkill(MycroftSkill):
         LOG.info('Writing: ' + myTagName + ' A value of: ' + str(myTagValue))
         self.comm.Write(myTagName, myTagValue)
         self.comm.Close()
+
+    # listening event used for kodi notifications
+    def handle_listen(self, message):
+        voice_payload = message.data.get('utterance')
+        if self.notifier_bool:
+            try:
+                LOG.info(voice_payload)
+            except Exception as e:
+                LOG.error(e)
+                self.on_websettings_changed()
+
+    # utterance event used for kodi notifications
+    def handle_utterances(self, message):
+        voice_payload = message.data.get('utterances')
+        if self.notifier_bool:
+            try:
+                LOG.info(voice_payload)
+                self.send_MQTT("Mycroft/Student", voice_payload)
+            except Exception as e:
+                LOG.error(e)
+                self.on_websettings_changed()
+
+    # mycroft speaking event used for kodi notificatons
+    def handle_speak(self, message):
+        voice_payload = message.data.get('utterance')
+        if self.notifier_bool:
+            try:
+                LOG.info(voice_payload)
+                self.send_MQTT("Mycroft/AI", voice_payload)
+            except Exception as e:
+                LOG.error(e)
+                self.on_websettings_changed()
+
+    def send_MQTT(self, myTopic, myMessage):
+        self.client = mqtt.Client(self.id_generator())  # create new instance
+        LOG.info(myTopic, myMessage)
+        #  self.client.connect(self.broker_address, self.broker_port)  # connect to broker
+        #  self.client.publish(myTopic, myMessage)  # publish
 
     def stop(self):
         pass
