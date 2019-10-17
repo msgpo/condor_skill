@@ -191,7 +191,7 @@ class CondorSkill(MycroftSkill):
         inTag = self.comm.Read(self.plcInTagName)
         while inTag.value == 0:
             inTag = self.comm.Read(self.plcInTagName)
-            LOG.info('Checking Robot Complete Status: ' + str(inTag.Value))
+            LOG.info('Checking Robot Complete Status: ' + str(inTag.value))
             if inTag.value == 1:
                 self.speak_dialog("card_delivered", wait=False)
             else:
