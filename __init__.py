@@ -52,9 +52,9 @@ class CondorSkill(MycroftSkill):
         if not self._is_setup:
             self.broker_address = self.settings.get("broker_address", "192.168.0.43")
             self.broker_port = self.settings.get("broker_port", 1884)
-            self.comm.IPAddress = self.settings.get("plc_address", "192.168.0.210")
+            self.comm.IPAddress = self.settings.get("plc_address", "192.168.0.210")  # PLC Address
             self.plcOutTagName = self.settings.get("plc_out_tag_name", "StartRobot")
-            self.plcInTagName = self.settings.get("plc_in_tag_name", "StartRobot")
+            self.plcInTagName = self.settings.get("plc_in_tag_name", "RobotStarted")
             self._is_setup = True
 
     def id_generator(self, size=6, chars=string.ascii_uppercase + string.digits):
@@ -175,22 +175,22 @@ class CondorSkill(MycroftSkill):
         self.client.publish(myTopic, myMessage)  # publish
 
     def start_robot(self):
-        self.write_PLC("StartRobot", 1)
+        self.write_plc("StartRobot", 1)
         LOG.info('PLC Output Should be On')
         self.speak_dialog("retrieve_card", wait=False)
         sleep(1)
-        self.write_PLC(self.plcOutTagName, 0)
+        self.write_plc(self.plcOutTagName, 0)
         LOG.info('PLC Output Should be Off')
         inTag = self.comm.Read(self.plcInTagName)
         while inTag.Value == 0:
             inTag = self.comm.Read(self.plcInTagName)
+            LOG.info('Checking Robot Complete Status: ' + str(inTag.Value))
             if inTag.Value == 1:
                 self.speak_dialog("card_delivered", wait=False)
             else:
                 sleep(0.5)
 
-
-    def write_PLC(self, myTagName, myTagValue):
+    def write_plc(self, myTagName, myTagValue):
         self.comm.Write(myTagName, myTagValue)
         self.comm.Close()
 
