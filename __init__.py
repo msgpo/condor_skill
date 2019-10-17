@@ -216,7 +216,7 @@ class CondorSkill(MycroftSkill):
 
     # utterance event used for kodi notifications
     def handle_utterances(self, message):
-        voice_payload = message.data.get('utterances')
+        voice_payload = str(message.data.get('utterances'))
         if self.notifier_bool:
             try:
                 LOG.info(voice_payload)
