@@ -116,6 +116,7 @@ class CondorSkill(MycroftSkill):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
         self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
+        self.speak_dialog("campus_intro", wait=True)
         self.speak_dialog("campus", wait=True)
         self.card_conversation()
 
