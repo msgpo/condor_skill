@@ -241,6 +241,7 @@ class CondorSkill(MycroftSkill):
         self.client = mqtt.Client(self.id_generator())  # create new instance
         self.client.connect(self.broker_address, self.broker_port)  # connect to broker
         self.client.publish(myTopic, myMessage)  # publish
+        LOG.info("address: " + self.broker_address + ", Port: " + self.broker_port)
 
     def stop(self):
         pass
