@@ -42,6 +42,7 @@ class CondorSkill(MycroftSkill):
         self.comm = PLC()
         self._is_setup = False
         self.io_pins = []
+        self.notifier_bool = True
 
     # This method loads the files needed for the skill's functioning, and
     # creates and registers each intent that the skill uses
