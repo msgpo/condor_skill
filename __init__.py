@@ -181,6 +181,7 @@ class CondorSkill(MycroftSkill):
         #self.client.publish(myTopic, myMessage)  # publish
 
     def start_robot(self):
+        LOG.info(self.comm.IPAddress)
         self.write_plc("StartRobot", 1)
         LOG.info('PLC Output Should be On')
         self.speak_dialog("retrieve_card", wait=False)
@@ -197,6 +198,7 @@ class CondorSkill(MycroftSkill):
                 sleep(0.5)
 
     def write_plc(self, myTagName, myTagValue):
+        LOG.info('Writing: ' + myTagName + ' A value of: ' + str(myTagValue))
         self.comm.Write(myTagName, myTagValue)
         self.comm.Close()
 
