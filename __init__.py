@@ -29,7 +29,8 @@ class CondorSkill(MycroftSkill):
     def __init__(self):
         super(CondorSkill, self).__init__(name="CondorSkill")
         self.myKeywords = []
-        self.client = mqtt.Client()
+        # self.client = ''  # mqtt.Client()
+        self.client = mqtt.Client(self.id_generator())
         self.broker_address = "192.168.0.43"
         self.settings["broker_address"] = self.broker_address
         self.broker_port = 1884
@@ -238,9 +239,12 @@ class CondorSkill(MycroftSkill):
 
     def send_MQTT(self, myTopic, myMessage):
         LOG.info("MQTT: " + myTopic + ", " + myMessage)
-        self.client = mqtt.Client(self.id_generator())  # create new instance
+        myID = self.id_generator()
+        LOG.info("MyID: " + str(myID))
+        self.client = mqtt.Client(myID)
         self.client.connect(self.broker_address, self.broker_port)  # connect to broker
         self.client.publish(myTopic, myMessage)  # publish
+        self.client.disconnect()
         LOG.info("address: " + self.broker_address + ", Port: " + str(self.broker_port))
 
     def stop(self):
