@@ -34,7 +34,7 @@ class CondorSkill(MycroftSkill):
         self.settings["broker_address"] = self.broker_address
         self.broker_port = 1884
         self.settings["broker_port"] = self.broker_port
-        self.settings["plc_address"] = "142.156.204.39"
+        self.settings["plc_address"] = '142.156.204.41'
         self.plcOutTagName = "StartRobot"
         self.settings["plc_out_tag_name"] = self.plcOutTagName
         self.plcInTagName = "RobotStarted"
@@ -57,7 +57,7 @@ class CondorSkill(MycroftSkill):
         if not self._is_setup:
             self.broker_address = self.settings.get("broker_address", "192.168.0.43")
             self.broker_port = self.settings.get("broker_port", 1884)
-            self.comm.IPAddress = self.settings.get("plc_address", "192.168.0.210")  # PLC Address
+            self.comm.IPAddress = self.settings.get("plc_address", '142.156.204.41')  # PLC Address
             self.plcOutTagName = self.settings.get("plc_out_tag_name", "StartRobot")
             self.plcInTagName = self.settings.get("plc_in_tag_name", "RobotStarted")
             self._is_setup = True
@@ -200,6 +200,7 @@ class CondorSkill(MycroftSkill):
     def write_plc(self, myTagName, myTagValue):
         LOG.info('Writing: ' + myTagName + ' A value of: ' + str(myTagValue))
         self.comm.Write(myTagName, myTagValue)
+        self.comm.
         self.comm.Close()
 
     def stop(self):
