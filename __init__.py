@@ -237,8 +237,8 @@ class CondorSkill(MycroftSkill):
                 self.on_websettings_changed()
 
     def send_MQTT(self, myTopic, myMessage):
+        LOG.info("MQTT: " + myTopic + ", " + myMessage)
         self.client = mqtt.Client(self.id_generator())  # create new instance
-        LOG.info(myTopic, myMessage)
         self.client.connect(self.broker_address, self.broker_port)  # connect to broker
         self.client.publish(myTopic, myMessage)  # publish
 
