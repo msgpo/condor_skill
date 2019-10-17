@@ -28,10 +28,16 @@
                         "value": "127.0.0.1"
                     },
                     {
-                        "name": "plc_tag_name",
+                        "name": "plc_out_tag_name",
                         "type": "text",
-                        "label": "The Boolean Tag Name Used in the PLC to Control The Robot",
+                        "label": "The Robot Start tag",
                         "value": "StartRobot"
+                    },
+                    {
+                        "name": "plc_in_tag_name",
+                        "type": "text",
+                        "label": "The Robot Complete tag",
+                        "value": "RobotStarted"
                     }
                 ]
             }

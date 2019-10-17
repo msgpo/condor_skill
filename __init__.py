@@ -33,10 +33,10 @@ class CondorSkill(MycroftSkill):
         self.settings["broker_address"] = "192.168.0.43"
         self.settings["broker_port"] = 1884
         self.settings["plc_address"] = "192.168.0.210"
-        self.settings["plc_tag_name"] = "StartRobot"
+        self.settings["plc_out_tag_name"] = "StartRobot"
+        self.settings["plc_in_tag_name"] = "RobotStarted"
         self.comm = PLC()
         self._is_setup = False
-
 
     # This method loads the files needed for the skill's functioning, and
     # creates and registers each intent that the skill uses
@@ -53,9 +53,9 @@ class CondorSkill(MycroftSkill):
             self.broker_address = self.settings.get("broker_address", "192.168.0.43")
             self.broker_port = self.settings.get("broker_port", 1884)
             self.comm.IPAddress = self.settings.get("plc_address", "192.168.0.210")
-            self.plcTagName = self.settings.get("plc_tag_name", "StartRobot")
+            self.plcOutTagName = self.settings.get("plc_out_tag_name", "StartRobot")
+            self.plcInTagName = self.settings.get("plc_in_tag_name", "StartRobot")
             self._is_setup = True
-
 
     def id_generator(self, size=6, chars=string.ascii_uppercase + string.digits):
         return ''.join(random.choice(chars) for _ in range(size))
@@ -69,7 +69,6 @@ class CondorSkill(MycroftSkill):
             str_limits = [4]
         else:
             str_limits = re.findall('\d+', str_remainder)
-
         if str_limits:
             gpio_request = int(str_limits[0])
             if (gpio_request > 1) and (gpio_request < 28):
@@ -130,12 +129,7 @@ class CondorSkill(MycroftSkill):
         self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
         self.send_MQTT("topic/mycroft.ai", "Condor.ai is retrieving a business card")
-        LOG.info('PLC Output Should be On')
-        self.write_PLC(self.plcTagName, 1)
-        self.speak_dialog("retrieve_card", wait=False)
-        sleep(1)
-        self.write_PLC(self.plcTagName, 0)
-        LOG.info('PLC Output Should be Off')
+        self.start_robot()
 
     @intent_handler(IntentBuilder("CardConversationIntent").require("BusinessCardContextKeyword").
                     one_of('YesKeyword', 'NoKeyword').build())
@@ -146,14 +140,9 @@ class CondorSkill(MycroftSkill):
         self.set_context('BusinessCardContextKeyword', '')
         if "YesKeyword" in message.data:
             self.send_MQTT("topic/mycroft.ai", "Condor.ai is retrieving a business card")
-            self.write_PLC("StartRobot", 1)
-            LOG.info('PLC Output Should be On')
-            self.speak_dialog("retrieve_card", wait=False)
-            sleep(1)
-            self.write_PLC(self.plcTagName, 0)
-            LOG.info('PLC Output Should be Off')
+            self.start_robot()
         else:
-            self.speak_dialog(self.plcTagName, wait=False)
+            self.speak_dialog("no_card", wait=False)
 
     def card_conversation(self):
         low_number = 1
@@ -184,6 +173,22 @@ class CondorSkill(MycroftSkill):
         self.client = mqtt.Client(self.id_generator())  # create new instance
         self.client.connect(self.broker_address, self.broker_port)  # connect to broker
         self.client.publish(myTopic, myMessage)  # publish
+
+    def start_robot(self):
+        self.write_PLC("StartRobot", 1)
+        LOG.info('PLC Output Should be On')
+        self.speak_dialog("retrieve_card", wait=False)
+        sleep(1)
+        self.write_PLC(self.plcOutTagName, 0)
+        LOG.info('PLC Output Should be Off')
+        inTag = self.comm.Read(self.plcInTagName)
+        while inTag.Value == 0:
+            inTag = self.comm.Read(self.plcInTagName)
+            if inTag.Value == 1:
+                self.speak_dialog("card_delivered", wait=False)
+            else:
+                sleep(0.5)
+
 
     def write_PLC(self, myTagName, myTagValue):
         self.comm.Write(myTagName, myTagValue)
