@@ -30,13 +30,18 @@ class CondorSkill(MycroftSkill):
         super(CondorSkill, self).__init__(name="CondorSkill")
         self.myKeywords = []
         self.client = mqtt.Client()
-        self.settings["broker_address"] = "192.168.0.43"
-        self.settings["broker_port"] = 1884
+        self.broker_address = "192.168.0.43"
+        self.settings["broker_address"] = self.broker_address
+        self.broker_port = 1884
+        self.settings["broker_port"] = self.broker_port
         self.settings["plc_address"] = "192.168.0.210"
-        self.settings["plc_out_tag_name"] = "StartRobot"
-        self.settings["plc_in_tag_name"] = "RobotStarted"
+        self.plcOutTagName = "StartRobot"
+        self.settings["plc_out_tag_name"] = self.plcOutTagName
+        self.plcInTagName = "RobotStarted"
+        self.settings["plc_in_tag_name"] = self.plcInTagName
         self.comm = PLC()
         self._is_setup = False
+        self.io_pins = []
 
     # This method loads the files needed for the skill's functioning, and
     # creates and registers each intent that the skill uses
