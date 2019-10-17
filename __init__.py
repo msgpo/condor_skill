@@ -177,8 +177,8 @@ class CondorSkill(MycroftSkill):
 
     def send_MQTT(self, myTopic, myMessage):
         self.client = mqtt.Client(self.id_generator())  # create new instance
-        self.client.connect(self.broker_address, self.broker_port)  # connect to broker
-        self.client.publish(myTopic, myMessage)  # publish
+        #self.client.connect(self.broker_address, self.broker_port)  # connect to broker
+        #self.client.publish(myTopic, myMessage)  # publish
 
     def start_robot(self):
         self.write_plc("StartRobot", 1)
