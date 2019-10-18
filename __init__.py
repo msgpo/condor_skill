@@ -33,7 +33,7 @@ class CondorSkill(MycroftSkill):
         self.client = mqtt.Client(self.id_generator())
         self.broker_address = "192.168.0.43"
         self.settings["broker_address"] = self.broker_address
-        self.broker_port = 1884
+        self.broker_port = 1883
         self.settings["broker_port"] = self.broker_port
         self.settings["plc_address"] = '142.156.204.41'
         self.plcOutTagName = "StartRobot"
@@ -63,7 +63,7 @@ class CondorSkill(MycroftSkill):
     def on_websettings_changed(self):  # called when updating mycroft home page
         if not self._is_setup:
             self.broker_address = self.settings.get("broker_address", "192.168.0.43")
-            self.broker_port = self.settings.get("broker_port", 1884)
+            self.broker_port = self.settings.get("broker_port", 1883)
             self.comm.IPAddress = self.settings.get("plc_address", '142.156.204.41')  # PLC Address
             self.plcOutTagName = self.settings.get("plc_out_tag_name", "StartRobot")
             self.plcInTagName = self.settings.get("plc_in_tag_name", "RobotStarted")
