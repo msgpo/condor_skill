@@ -44,6 +44,12 @@
                         "type": "text",
                         "label": "The Robot Complete tag",
                         "value": "RobotStarted"
+                    },
+                    {
+                        "name": "card_request_interval",
+                        "type": "number",
+                        "label": "Card Request Frequency 1/#",
+                        "value": 2
                     }
                 ]
             }

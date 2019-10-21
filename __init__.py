@@ -44,6 +44,8 @@ class CondorSkill(MycroftSkill):
         self.settings["plc_out_tag_name"] = ""  # self.plcOutTagName
         self.plcInTagName = "RobotStarted"
         self.settings["plc_in_tag_name"] = ""  # self.plcInTagName
+        self.cardRequestFreq = 2
+        self.settings["card_request_interval"] = 2
         self.comm = PLC()
         self._is_setup = False
         self.io_pins = []
@@ -73,6 +75,7 @@ class CondorSkill(MycroftSkill):
         self.comm.IPAddress = self.settings.get("plc_address", '142.156.204.41')  # PLC Address
         self.plcOutTagName = self.settings.get("plc_out_tag_name", "StartRobot")
         self.plcInTagName = self.settings.get("plc_in_tag_name", "RobotStarted")
+        self.cardRequestFreq = self.settings.get("card_request_interval", 2)
         self._is_setup = True
         LOG.info("Websettings Changed! " + str(self.MQTT_Enabled) + ", "
                  + self.broker_address + ", " + str(self.broker_port))
