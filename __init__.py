@@ -226,18 +226,19 @@ class CondorSkill(MycroftSkill):
                 LOG.error(e)
                 self.on_websettings_changed()
 
-    # utterance event used for kodi notifications
+    # utterance event used for notifications ***This is what the user says***
     def handle_utterances(self, message):
         voice_payload = str(message.data.get('utterances')[0])
         if self.notifier_bool:
             try:
                 LOG.info(voice_payload)
-                self.send_MQTT("Mycroft/Student", voice_payload)
+                self.send_MQTT("Mycroft/Student", voice_payload
+                self.card_conversation()
             except Exception as e:
                 LOG.error(e)
                 self.on_websettings_changed()
 
-    # mycroft speaking event used for kodi notificatons
+    # mycroft speaking event used for notificatons ***This is what mycroft says***
     def handle_speak(self, message):
         voice_payload = message.data.get('utterance')
         if self.notifier_bool:
