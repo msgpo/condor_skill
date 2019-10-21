@@ -11,7 +11,7 @@
                     },
                     {
                         "name": "MQTT_Enabled",
-                        "type": "Checkbox",
+                        "type": "checkbox",
                         "label": "Use MQTT?",
                         "value": False
                     },
