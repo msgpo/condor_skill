@@ -33,6 +33,7 @@ class CondorSkill(MycroftSkill):
 
         # Initialize settings values
         self.client = mqtt.Client(self.id_generator())
+        self.MQTT_Enabled = False
         self.settings["MQTT_Enabled"] = False
         self.broker_address = "192.168.0.43"
         self.settings["broker_address"] = ""  #self.broker_address
@@ -66,7 +67,7 @@ class CondorSkill(MycroftSkill):
 
     def on_websettings_changed(self):  # called when updating mycroft home page
         # if not self._is_setup:
-        self.broker_address = self.settings.get("MQTT_Enabled", False)
+        self.MQTT_Enabled = self.settings.get("MQTT_Enabled", False)
         self.broker_address = self.settings.get("broker_address", "192.168.0.43")
         self.broker_port = self.settings.get("broker_port", 1883)
         self.comm.IPAddress = self.settings.get("plc_address", '142.156.204.41')  # PLC Address
@@ -243,14 +244,17 @@ class CondorSkill(MycroftSkill):
                 self.on_websettings_changed()
 
     def send_MQTT(self, myTopic, myMessage):
-        LOG.info("MQTT: " + myTopic + ", " + myMessage)
-        myID = self.id_generator()
-        LOG.info("MyID: " + str(myID))
-        self.client = mqtt.Client(myID)
-        self.client.connect(self.broker_address, self.broker_port)  # connect to broker
-        self.client.publish(myTopic, myMessage)  # publish
-        self.client.disconnect()
-        LOG.info("address: " + self.broker_address + ", Port: " + str(self.broker_port))
+        if self.MQTT_Enabled:
+            LOG.info("MQTT: " + myTopic + ", " + myMessage)
+            myID = self.id_generator()
+            LOG.info("MyID: " + str(myID))
+            self.client = mqtt.Client(myID)
+            self.client.connect(self.broker_address, self.broker_port)  # connect to broker
+            self.client.publish(myTopic, myMessage)  # publish
+            self.client.disconnect()
+            LOG.info("address: " + self.broker_address + ", Port: " + str(self.broker_port))
+        else:
+            LOG.info("MQTT has been disabled in the websettings at https://home.mycroft.ai")
 
     def stop(self):
         pass
