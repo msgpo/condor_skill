@@ -111,7 +111,6 @@ class CondorSkill(MycroftSkill):
                     require("AboutKeyword").require("ConestogaKeyword").build())
     def handle_wiki_intent(self, message):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
-        # self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
         self.speak_dialog("about", wait=True)
         self.card_conversation()
@@ -120,7 +119,6 @@ class CondorSkill(MycroftSkill):
                     require("AcademicKeyword").optionally("ConestogaKeyword").build())
     def handle_academic_intent(self, message):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
-        # self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
         self.speak_dialog("academic1", wait=True)
         self.speak_dialog("academic2", wait=True)
@@ -132,7 +130,6 @@ class CondorSkill(MycroftSkill):
                     optionally("CampusKeyword").require("ConestogaKeyword").build())
     def handle_campus_intent(self, message):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
-        # self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
         self.speak_dialog("campus_intro", wait=True)
         self.speak_dialog("campus", wait=True)
@@ -143,27 +140,22 @@ class CondorSkill(MycroftSkill):
     def handle_set_stack_light_intent(self, message):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
         color_kw = message.data.get("ColorKeyword")
-        # self.send_MQTT("Arcx/SL", str(color_kw))
         self.speak_dialog("set_stacklight", data={"result": str(color_kw)}, wait=True)
 
     @intent_handler(IntentBuilder("RobotStartIntent").require("BusinessKeyword").
                     require("CardKeyword").optionally("ConestogaKeyword").build())
     def handle_robot_start_intent(self, message):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
-        # self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
-        # self.send_MQTT("topic/mycroft.ai", "Condor.ai is retrieving a business card")
         self.start_robot()
 
     @intent_handler(IntentBuilder("CardConversationIntent").require("BusinessCardContextKeyword").
                     one_of('YesKeyword', 'NoKeyword').build())
     def handle_card_conversation_intent(self, message):
         LOG.info('Condor.ai was asked: ' + message.data.get('utterance'))
-        # self.send_MQTT("topic/mycroft.ai", 'Condor.ai was asked: ' + message.data.get('utterance'))
         str_remainder = str(message.utterance_remainder())
         self.set_context('BusinessCardContextKeyword', '')
         if "YesKeyword" in message.data:
-            # self.send_MQTT("topic/mycroft.ai", "Condor.ai is retrieving a business card")
             self.start_robot()
         else:
             self.speak_dialog("no_card", wait=False)
@@ -233,11 +225,10 @@ class CondorSkill(MycroftSkill):
             try:
                 LOG.info(voice_payload)
                 self.send_MQTT("Mycroft/Student", voice_payload)
-                self.card_conversation()
+
             except Exception as e:
                 LOG.error(e)
                 self.on_websettings_changed()
-
     # mycroft speaking event used for notificatons ***This is what mycroft says***
     def handle_speak(self, message):
         voice_payload = message.data.get('utterance')
@@ -245,6 +236,7 @@ class CondorSkill(MycroftSkill):
             try:
                 LOG.info(voice_payload)
                 self.send_MQTT("Mycroft/AI", voice_payload)
+                #self.card_conversation()
             except Exception as e:
                 LOG.error(e)
                 self.on_websettings_changed()
