@@ -172,7 +172,7 @@ class CondorSkill(MycroftSkill):
         low_number = 1
         high_number = self.cardRequestFreq
         my_number = random.randint(low_number, high_number)
-        LOG.info('Card Request Context ID: ' + str(my_number) + '/'+high_number)
+        LOG.info('Card Request Context ID: ' + str(my_number) + '/' + str(high_number))
         if my_number == high_number:
             self.set_context('BusinessCardContextKeyword', 'SetBusinessCardContext')
             self.speak_dialog("ask_card", wait=True, expect_response=True)
