@@ -74,7 +74,7 @@ class CondorSkill(MycroftSkill):
         self.plcOutTagName = self.settings.get("plc_out_tag_name", "StartRobot")
         self.plcInTagName = self.settings.get("plc_in_tag_name", "RobotStarted")
         self._is_setup = True
-        LOG.info("Websettings Changed! " + self.MQTT_Enabled + ", "
+        LOG.info("Websettings Changed! " + str(self.MQTT_Enabled) + ", "
                  + self.broker_address + ", " + str(self.broker_port))
 
     def id_generator(self, size=6, chars=string.ascii_uppercase + string.digits):
