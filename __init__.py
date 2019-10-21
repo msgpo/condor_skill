@@ -232,7 +232,7 @@ class CondorSkill(MycroftSkill):
         if self.notifier_bool:
             try:
                 LOG.info(voice_payload)
-                self.send_MQTT("Mycroft/Student", voice_payload
+                self.send_MQTT("Mycroft/Student", voice_payload)
                 self.card_conversation()
             except Exception as e:
                 LOG.error(e)
