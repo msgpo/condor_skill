@@ -13,7 +13,7 @@
                         "name": "MQTT_Enabled",
                         "type": "checkbox",
                         "label": "Use MQTT?",
-                        "value": False
+                        "value": false
                     },
                     {
                         "name": "broker_address",
