@@ -30,16 +30,19 @@ class CondorSkill(MycroftSkill):
         super(CondorSkill, self).__init__(name="CondorSkill")
         self.myKeywords = []
         # self.client = ''  # mqtt.Client()
+
+        # Initialize settings values
         self.client = mqtt.Client(self.id_generator())
+        self.settings["MQTT_Enabled"] = False
         self.broker_address = "192.168.0.43"
-        self.settings["broker_address"] = self.broker_address
+        self.settings["broker_address"] = ""  #self.broker_address
         self.broker_port = 1883
-        self.settings["broker_port"] = self.broker_port
-        self.settings["plc_address"] = '142.156.204.41'
+        self.settings["broker_port"] = ""  # self.broker_port
+        self.settings["plc_address"] = ""  # '142.156.204.41'
         self.plcOutTagName = "StartRobot"
-        self.settings["plc_out_tag_name"] = self.plcOutTagName
+        self.settings["plc_out_tag_name"] = ""  # self.plcOutTagName
         self.plcInTagName = "RobotStarted"
-        self.settings["plc_in_tag_name"] = self.plcInTagName
+        self.settings["plc_in_tag_name"] = ""  # self.plcInTagName
         self.comm = PLC()
         self._is_setup = False
         self.io_pins = []
@@ -51,6 +54,7 @@ class CondorSkill(MycroftSkill):
         self.io_pins = [3, 5, 7, 29, 31, 26, 24, 21, 19, 23, 32, 33, 8, 10, 36, 11, 12, 35, 38, 40, 15, 16, 18, 22, 37, 13]
         GPIO.setmode(GPIO.BOARD)
         self.load_data_files(dirname(__file__))
+
         #  Check and then monitor for credential changes
         self.settings.set_changed_callback(self.on_websettings_changed)
         self.on_websettings_changed()
@@ -61,13 +65,14 @@ class CondorSkill(MycroftSkill):
 
 
     def on_websettings_changed(self):  # called when updating mycroft home page
-        if not self._is_setup:
-            self.broker_address = self.settings.get("broker_address", "192.168.0.43")
-            self.broker_port = self.settings.get("broker_port", 1883)
-            self.comm.IPAddress = self.settings.get("plc_address", '142.156.204.41')  # PLC Address
-            self.plcOutTagName = self.settings.get("plc_out_tag_name", "StartRobot")
-            self.plcInTagName = self.settings.get("plc_in_tag_name", "RobotStarted")
-            self._is_setup = True
+        # if not self._is_setup:
+        self.broker_address = self.settings.get("MQTT_Enabled", False)
+        self.broker_address = self.settings.get("broker_address", "192.168.0.43")
+        self.broker_port = self.settings.get("broker_port", 1883)
+        self.comm.IPAddress = self.settings.get("plc_address", '142.156.204.41')  # PLC Address
+        self.plcOutTagName = self.settings.get("plc_out_tag_name", "StartRobot")
+        self.plcInTagName = self.settings.get("plc_in_tag_name", "RobotStarted")
+        self._is_setup = True
 
     def id_generator(self, size=6, chars=string.ascii_uppercase + string.digits):
         return ''.join(random.choice(chars) for _ in range(size))

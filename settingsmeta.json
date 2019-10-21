@@ -10,6 +10,12 @@
                         "label": "Complete the data for the following settings."
                     },
                     {
+                        "name": "MQTT_Enabled",
+                        "type": "Checkbox",
+                        "label": "Use MQTT?",
+                        "value": False
+                    },
+                    {
                         "name": "broker_address",
                         "type": "text",
                         "label": "IP Address of the MQTT Broker",
