@@ -69,7 +69,7 @@ class CondorSkill(MycroftSkill):
 
     def on_websettings_changed(self):  # called when updating mycroft home page
         # if not self._is_setup:
-        self.MQTT_Enabled = self.settings.get("MQTT_Enabled", False)
+        self.MQTT_Enabled = self.settings.get("MQTT_Enabled", False)  # used to enable / disable mqtt
         self.broker_address = self.settings.get("broker_address", "192.168.0.43")
         self.broker_port = self.settings.get("broker_port", 1883)
         self.comm.IPAddress = self.settings.get("plc_address", '142.156.204.41')  # PLC Address
