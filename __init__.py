@@ -33,19 +33,19 @@ class CondorSkill(MycroftSkill):
 
         # Initialize settings values
         self.client = mqtt.Client(self.id_generator())
-        self.MQTT_Enabled = False
-        self.settings["MQTT_Enabled"] = False
-        self.broker_address = "192.168.0.43"
-        self.settings["broker_address"] = ""  #self.broker_address
-        self.broker_port = 1883
-        self.settings["broker_port"] = ""  # self.broker_port
-        self.settings["plc_address"] = ""  # '142.156.204.41'
-        self.plcOutTagName = "StartRobot"
-        self.settings["plc_out_tag_name"] = ""  # self.plcOutTagName
-        self.plcInTagName = "RobotStarted"
-        self.settings["plc_in_tag_name"] = ""  # self.plcInTagName
-        self.cardRequestFreq = 2
-        self.settings["card_request_interval"] = 2
+        #self.MQTT_Enabled = False
+        #self.settings["MQTT_Enabled"] = False
+        #self.broker_address = "192.168.0.43"
+        #self.settings["broker_address"] = ""  #self.broker_address
+        #self.broker_port = 1883
+        #self.settings["broker_port"] = ""  # self.broker_port
+        #self.settings["plc_address"] = ""  # '142.156.204.41'
+        #self.plcOutTagName = "StartRobot"
+        #self.settings["plc_out_tag_name"] = ""  # self.plcOutTagName
+        #self.plcInTagName = "RobotStarted"
+        #self.settings["plc_in_tag_name"] = ""  # self.plcInTagName
+        #self.cardRequestFreq = 2
+        #self.settings["card_request_interval"] = 2
         self.comm = PLC()
         self._is_setup = False
         self.io_pins = []
@@ -68,7 +68,7 @@ class CondorSkill(MycroftSkill):
 
 
     def on_websettings_changed(self):  # called when updating mycroft home page
-        # if not self._is_setup:
+        #if not self._is_setup:
         self.MQTT_Enabled = self.settings.get("MQTT_Enabled", False)  # used to enable / disable mqtt
         self.broker_address = self.settings.get("broker_address", "192.168.0.43")
         self.broker_port = self.settings.get("broker_port", 1883)
@@ -170,10 +170,10 @@ class CondorSkill(MycroftSkill):
 
     def card_conversation(self):
         low_number = 1
-        high_number = 5
+        high_number = self.cardRequestFreq
         my_number = random.randint(low_number, high_number)
-        LOG.info('Card Request Context ID: ' + str(my_number))
-        if my_number == 5:
+        LOG.info('Card Request Context ID: ' + str(my_number) + '/'+high_number)
+        if my_number == high_number:
             self.set_context('BusinessCardContextKeyword', 'SetBusinessCardContext')
             self.speak_dialog("ask_card", wait=True, expect_response=True)
 
