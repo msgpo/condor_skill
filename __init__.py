@@ -10,6 +10,7 @@ import string
 import random
 import RPi.GPIO as GPIO
 import paho.mqtt.client as mqtt
+import paho.mqtt.publish as publish
 
 import re
 
@@ -244,13 +245,15 @@ class CondorSkill(MycroftSkill):
     def send_MQTT(self, myTopic, myMessage):
         if self.MQTT_Enabled:
             LOG.info("MQTT: " + myTopic + ", " + myMessage)
-            myID = self.id_generator()
+            #myID = self.id_generator()
             LOG.info("MyID: " + str(myID))
-            self.client = mqtt.Client(myID)
-            self.client.connect(self.broker_address, self.broker_port)  # connect to broker
-            self.client.publish(myTopic, myMessage)  # publish
-            self.client.disconnect()
+            #self.client = mqtt.Client(myID)
+            #self.client.connect(self.broker_address, self.broker_port)  # connect to broker
+            #self.client.publish(myTopic, myMessage)  # publish
+            #self.client.disconnect()
             LOG.info("address: " + self.broker_address + ", Port: " + str(self.broker_port))
+            publish.single(myTopic, myMessage, hostname=self.broker_address)
+
         else:
             LOG.info("MQTT has been disabled in the websettings at https://home.mycroft.ai")
 
