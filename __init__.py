@@ -245,8 +245,8 @@ class CondorSkill(MycroftSkill):
     def send_MQTT(self, myTopic, myMessage):
         if self.MQTT_Enabled:
             LOG.info("MQTT: " + myTopic + ", " + myMessage)
-            #myID = self.id_generator()
-            LOG.info("MyID: " + str(myID))
+            myID = self.id_generator()
+            #LOG.info("MyID: " + str(myID))
             #self.client = mqtt.Client(myID)
             #self.client.connect(self.broker_address, self.broker_port)  # connect to broker
             #self.client.publish(myTopic, myMessage)  # publish
